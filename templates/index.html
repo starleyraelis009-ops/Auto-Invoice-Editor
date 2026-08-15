@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Auto Invoice Editor</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f5f7fa,
+                    #e4e8ee
+                );
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+            color: #1f2937;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 720px;
+        }
+
+        .card {
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 15px 40px
+                rgba(0, 0, 0, 0.10);
+        }
+
+        .header {
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        .header .icon {
+            width: 70px;
+            height: 70px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 18px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #111827;
+
+            color: white;
+
+            font-size: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #6b7280;
+
+            line-height: 1.6;
+        }
+
+        .section {
+            margin-bottom: 22px;
+        }
+
+        .section-title {
+            font-size: 15px;
+
+            font-weight: bold;
+
+            margin-bottom: 9px;
+        }
+
+        .upload-box {
+            border: 2px dashed #d1d5db;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            text-align: center;
+
+            transition: 0.2s;
+        }
+
+        .upload-box:hover {
+            border-color: #111827;
+
+            background: #f9fafb;
+        }
+
+        .upload-box input {
+            width: 100%;
+
+            margin-top: 12px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            background: white;
+
+            cursor: pointer;
+        }
+
+        .file-info {
+            margin-top: 10px;
+
+            font-size: 13px;
+
+            color: #6b7280;
+        }
+
+        .info {
+            background: #f3f4f6;
+
+            border-radius: 12px;
+
+            padding: 18px;
+
+            margin-top: 25px;
+
+            line-height: 1.7;
+
+            font-size: 14px;
+        }
+
+        .info strong {
+            color: #111827;
+        }
+
+        .generate-button {
+            width: 100%;
+
+            border: none;
+
+            border-radius: 12px;
+
+            padding: 15px;
+
+            margin-top: 25px;
+
+            background: #111827;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .generate-button:hover {
+            background: #374151;
+
+            transform: translateY(-1px);
+        }
+
+        .generate-button:disabled {
+            background: #9ca3af;
+
+            cursor: not-allowed;
+
+            transform: none;
+        }
+
+        .status {
+            display: none;
+
+            margin-top: 20px;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            text-align: center;
+
+            font-size: 14px;
+        }
+
+        .status.loading {
+            display: block;
+
+            background: #f3f4f6;
+
+            color: #374151;
+        }
+
+        .footer {
+            text-align: center;
+
+            margin-top: 20px;
+
+            font-size: 12px;
+
+            color: #9ca3af;
+        }
+
+        .template-example {
+            background: #111827;
+
+            color: white;
+
+            border-radius: 10px;
+
+            padding: 15px;
+
+            margin-top: 15px;
+
+            font-family: monospace;
+
+            font-size: 13px;
+
+            line-height: 1.8;
+
+            overflow-x: auto;
+        }
+
+        @media (max-width: 600px) {
+
+            .card {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <!-- =========================================
+             HEADER
+        ========================================== -->
+
+        <div class="header">
+
+            <div class="icon">
+                📄
+            </div>
+
+            <h1>
+                Auto Invoice Editor
+            </h1>
+
+            <p>
+                Buat dokumen Word secara otomatis
+                berdasarkan data dari Excel.
+            </p>
+
+        </div>
+
+
+        <!-- =========================================
+             FORM
+        ========================================== -->
+
+        <form
+            id="generateForm"
+            action="/generate"
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            <!-- =====================================
+                 EXCEL
+            ====================================== -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    1. File Data Excel
+                </div>
+
+                <div class="upload-box">
+
+                    <div>
+                        📊
+                    </div>
+
+                    <p>
+                        Pilih file Excel yang berisi
+                        data invoice.
+                    </p>
+
+                    <input
+                        type="file"
+                        id="excel"
+                        name="excel"
+                        accept=".xlsx"
+                        required
+                    >
+
+                    <div
+                        class="file-info"
+                        id="excelInfo"
+                    >
+                        Belum ada file dipilih.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 WORD TEMPLATE
+            ====================================== -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    2. Template Word
+                </div>
+
+                <div class="upload-box">
+
+                    <div>
+                        📝
+                    </div>
+
+                    <p>
+                        Pilih template Word
+                        (.docx).
+                    </p>
+
+                    <input
+                        type="file"
+                        id="template"
+                        name="template"
+                        accept=".docx"
+                        required
+                    >
+
+                    <div
+                        class="file-info"
+                        id="templateInfo"
+                    >
+                        Belum ada file dipilih.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 INFO
+            ====================================== -->
+
+            <div class="info">
+
+                <strong>
+                    Cara kerja:
+                </strong>
+
+                <br>
+
+                Header pada Excel digunakan
+                sebagai nama placeholder pada
+                template Word.
+
+                <div class="template-example">
+nama | alamat | tanggal
+<br>
+Starley | Denpasar | 15/08/2026
+<br><br>
+Nama: {{ nama }}
+<br>
+Alamat: {{ alamat }}
+<br>
+Tanggal: {{ tanggal }}
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 BUTTON
+            ====================================== -->
+
+            <button
+                type="submit"
+                class="generate-button"
+                id="generateButton"
+            >
+                Generate Document
+            </button>
+
+
+            <!-- =====================================
+                 STATUS
+            ====================================== -->
+
+            <div
+                class="status"
+                id="status"
+            >
+                Sedang membuat dokumen...
+            </div>
+
+        </form>
+
+
+        <!-- =========================================
+             FOOTER
+        ========================================== -->
+
+        <div class="footer">
+
+            Auto Invoice Editor
+            <br>
+            Local Portable Edition
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // =================================================
+    // ELEMENT
+    // =================================================
+
+    const excelInput =
+        document.getElementById("excel");
+
+    const templateInput =
+        document.getElementById("template");
+
+    const excelInfo =
+        document.getElementById("excelInfo");
+
+    const templateInfo =
+        document.getElementById("templateInfo");
+
+    const form =
+        document.getElementById("generateForm");
+
+    const button =
+        document.getElementById("generateButton");
+
+    const status =
+        document.getElementById("status");
+
+
+    // =================================================
+    // EXCEL FILE
+    // =================================================
+
+    excelInput.addEventListener(
+        "change",
+        function () {
+
+            if (this.files.length > 0) {
+
+                excelInfo.textContent =
+                    "File dipilih: " +
+                    this.files[0].name;
+
+            } else {
+
+                excelInfo.textContent =
+                    "Belum ada file dipilih.";
+
+            }
+
+        }
+    );
+
+
+    // =================================================
+    // WORD FILE
+    // =================================================
+
+    templateInput.addEventListener(
+        "change",
+        function () {
+
+            if (this.files.length > 0) {
+
+                templateInfo.textContent =
+                    "File dipilih: " +
+                    this.files[0].name;
+
+            } else {
+
+                templateInfo.textContent =
+                    "Belum ada file dipilih.";
+
+            }
+
+        }
+    );
+
+
+    // =================================================
+    // FORM SUBMIT
+    // =================================================
+
+    form.addEventListener(
+        "submit",
+        function () {
+
+            button.disabled = true;
+
+            button.textContent =
+                "Sedang memproses...";
+
+            status.className =
+                "status loading";
+
+            status.textContent =
+                "Dokumen sedang dibuat. " +
+                "Jangan tutup halaman ini.";
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
