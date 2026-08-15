@@ -37,11 +37,8 @@ app = Flask(
 # =========================================================
 
 def normalize_name(text):
-
     text = str(text).strip().lower()
-
     text = text.replace(" ", "_")
-
     return text
 
 
@@ -65,7 +62,6 @@ def replace_text(text, data):
         )
 
         if value is None:
-
             return ""
 
         return str(value)
@@ -87,7 +83,6 @@ def process_paragraph(
 ):
 
     if not paragraph.text:
-
         return
 
     new_text = replace_text(
@@ -96,12 +91,11 @@ def process_paragraph(
     )
 
     if new_text != paragraph.text:
-
         paragraph.text = new_text
 
 
 # =========================================================
-# PROSES WORD
+# PROSES DOKUMEN WORD
 # =========================================================
 
 def process_document(
@@ -181,6 +175,16 @@ def home():
     return render_template(
         "index.html"
     )
+
+
+# =========================================================
+# TEST ENDPOINT
+# =========================================================
+
+@app.route("/api")
+def api_test():
+
+    return "Flask berhasil berjalan di Vercel!"
 
 
 # =========================================================
