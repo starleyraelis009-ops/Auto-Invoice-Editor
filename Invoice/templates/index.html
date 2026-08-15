@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Document Generator</title>
+
+
+    <!-- ==============================
+         CSS INTERNAL
+    ============================== -->
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+
+            background: #f7f7f8;
+
+            color: #2f2f2f;
+
+            line-height: 1.6;
+        }
+
+
+        /* HEADER */
+
+        .header {
+            background: #ffffff;
+
+            border-bottom: 1px solid #e5e5e5;
+
+            padding: 42px 20px;
+        }
+
+
+        .header-content {
+            max-width: 760px;
+
+            margin: auto;
+        }
+
+
+        .header h1 {
+            margin: 0;
+
+            font-size: 30px;
+
+            font-weight: 600;
+
+            color: #202123;
+        }
+
+
+        .header p {
+            margin-top: 8px;
+
+            margin-bottom: 0;
+
+            color: #6b6b6b;
+
+            font-size: 15px;
+        }
+
+
+        /* MAIN */
+
+        main {
+            width: 100%;
+
+            max-width: 760px;
+
+            margin: auto;
+
+            padding: 32px 20px 60px;
+        }
+
+
+        /* CARD */
+
+        .card {
+            background: #ffffff;
+
+            border: 1px solid #e5e5e5;
+
+            border-radius: 12px;
+
+            padding: 26px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .card h2 {
+            margin-top: 0;
+
+            margin-bottom: 8px;
+
+            font-size: 19px;
+
+            font-weight: 600;
+
+            color: #202123;
+        }
+
+
+        .card p {
+            color: #5f6368;
+
+            font-size: 14px;
+        }
+
+
+        /* CODE */
+
+        code {
+            display: inline-block;
+
+            background: #f0f0f0;
+
+            border-radius: 6px;
+
+            padding: 3px 7px;
+
+            margin: 2px;
+
+            font-family: monospace;
+
+            font-size: 13px;
+
+            color: #343541;
+        }
+
+
+        /* CONTOH TEMPLATE */
+
+        .document-example {
+            margin-top: 18px;
+
+            padding: 18px;
+
+            background: #f7f7f8;
+
+            border: 1px solid #e5e5e5;
+
+            border-radius: 8px;
+        }
+
+
+        .document-example p {
+            margin: 7px 0;
+
+            color: #343541;
+        }
+
+
+        /* INFO */
+
+        .info-box {
+            margin-top: 18px;
+
+            padding: 15px 18px;
+
+            background: #f7f7f8;
+
+            border-radius: 8px;
+
+            border: 1px solid #e5e5e5;
+        }
+
+
+        .info-box strong {
+            font-size: 14px;
+        }
+
+
+        /* TABLE */
+
+        table {
+            width: 100%;
+
+            margin-top: 18px;
+
+            border-collapse: collapse;
+
+            font-size: 14px;
+        }
+
+
+        th,
+        td {
+            text-align: left;
+
+            padding: 11px;
+
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+
+        th {
+            background: #f7f7f8;
+
+            font-weight: 600;
+
+            color: #343541;
+        }
+
+
+        td {
+            color: #5f6368;
+        }
+
+
+        /* UPLOAD */
+
+        .upload-group {
+            margin-top: 20px;
+        }
+
+
+        .upload-group label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            color: #343541;
+        }
+
+
+        .upload-group input[type="file"] {
+            width: 100%;
+
+            padding: 10px;
+
+            border: 1px solid #d9d9e3;
+
+            border-radius: 8px;
+
+            background: #ffffff;
+
+            cursor: pointer;
+        }
+
+
+        .file-name {
+            display: block;
+
+            margin-top: 7px;
+
+            color: #8e8e8e;
+
+            font-size: 12px;
+        }
+
+
+        /* BUTTON */
+
+        button {
+            width: 100%;
+
+            margin-top: 25px;
+
+            padding: 12px 18px;
+
+            border: 0;
+
+            border-radius: 8px;
+
+            background: #2f2f2f;
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: background 0.15s ease;
+        }
+
+
+        button:hover {
+            background: #424242;
+        }
+
+
+        button:disabled {
+            background: #9a9a9a;
+
+            cursor: not-allowed;
+        }
+
+
+        /* STATUS */
+
+        .status-card {
+            border-left: 3px solid #555555;
+        }
+
+
+        .status-card p {
+            margin-bottom: 0;
+        }
+
+
+        /* FOOTER */
+
+        footer {
+            padding: 25px;
+
+            text-align: center;
+
+            background: #ffffff;
+
+            border-top: 1px solid #e5e5e5;
+        }
+
+
+        footer p {
+            margin: 0;
+
+            color: #8e8e8e;
+
+            font-size: 13px;
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 600px) {
+
+            .header {
+                padding: 32px 18px;
+            }
+
+
+            .header h1 {
+                font-size: 25px;
+            }
+
+
+            main {
+                padding: 20px 12px 40px;
+            }
+
+
+            .card {
+                padding: 20px;
+            }
+
+
+            table {
+                display: block;
+
+                overflow-x: auto;
+
+                white-space: nowrap;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ==============================
+         HEADER
+    ============================== -->
+
+    <header class="header">
+
+        <div class="header-content">
+
+            <h1>Document Generator</h1>
+
+            <p>
+                Buat dokumen secara otomatis dari data Excel
+                menggunakan template Anda sendiri.
+            </p>
+
+        </div>
+
+    </header>
+
+
+    <main>
+
+
+        <!-- ==============================
+             INTRODUCTION
+        ============================== -->
+
+        <section class="card">
+
+            <h2>Mulai membuat dokumen</h2>
+
+            <p>
+                Upload file Excel yang berisi data dan template
+                Word yang ingin digunakan. Sistem akan membaca
+                data tersebut dan membuat dokumen secara otomatis.
+            </p>
+
+        </section>
+
+
+        <!-- ==============================
+             TEMPLATE
+        ============================== -->
+
+        <section class="card">
+
+            <h2>1. Siapkan template Word</h2>
+
+            <p>
+                Gunakan file Microsoft Word (.docx).
+                Masukkan placeholder pada bagian yang ingin
+                diisi secara otomatis.
+            </p>
+
+
+            <div class="document-example">
+
+                <p><strong>DATA SISWA</strong></p>
+
+                <p>
+                    Nama :
+                    <code>{{nama}}</code>
+                </p>
+
+                <p>
+                    Kelas :
+                    <code>{{kelas}}</code>
+                </p>
+
+                <p>
+                    Nomor Absen :
+                    <code>{{no_absen}}</code>
+                </p>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <strong>Contoh placeholder</strong>
+
+                <p>
+                    <code>{{nama}}</code>
+                    <code>{{nis}}</code>
+                    <code>{{nisn}}</code>
+                    <code>{{kelas}}</code>
+                    <code>{{no_absen}}</code>
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==============================
+             EXCEL
+        ============================== -->
+
+        <section class="card">
+
+            <h2>2. Siapkan file Excel</h2>
+
+            <p>
+                Baris pertama Excel digunakan sebagai nama kolom.
+                Baris berikutnya berisi data.
+            </p>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>nama</th>
+
+                        <th>kelas</th>
+
+                        <th>no_absen</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr>
+
+                        <td>Budi</td>
+
+                        <td>XI RPL 1</td>
+
+                        <td>12</td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>Ani</td>
+
+                        <td>XI RPL 1</td>
+
+                        <td>13</td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+
+            <p>
+                Jumlah kolom tidak harus sama untuk setiap pengguna.
+                Sistem hanya menggunakan data yang dibutuhkan oleh
+                template.
+            </p>
+
+        </section>
+
+
+        <!-- ==============================
+             UPLOAD
+        ============================== -->
+
+        <section class="card">
+
+            <h2>3. Upload file</h2>
+
+
+            <form
+                action="/generate"
+                method="POST"
+                enctype="multipart/form-data"
+                id="uploadForm"
+            >
+
+
+                <div class="upload-group">
+
+                    <label for="excel">
+
+                        File Excel
+
+                    </label>
+
+
+                    <input
+                        type="file"
+                        id="excel"
+                        name="excel"
+                        accept=".xlsx"
+                        required
+                    >
+
+
+                    <span
+                        id="excel-name"
+                        class="file-name"
+                    >
+
+                        Belum ada file dipilih
+
+                    </span>
+
+                </div>
+
+
+                <div class="upload-group">
+
+                    <label for="template">
+
+                        Template Word
+
+                    </label>
+
+
+                    <input
+                        type="file"
+                        id="template"
+                        name="template"
+                        accept=".docx"
+                        required
+                    >
+
+
+                    <span
+                        id="template-name"
+                        class="file-name"
+                    >
+
+                        Belum ada file dipilih
+
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    id="generate-button"
+                >
+
+                    Buat Dokumen
+
+                </button>
+
+
+            </form>
+
+        </section>
+
+
+        <!-- ==============================
+             STATUS
+        ============================== -->
+
+        <section
+            class="card status-card"
+            id="status-card"
+            hidden
+        >
+
+            <h2>Status</h2>
+
+            <p id="status-message">
+                Sedang memproses...
+            </p>
+
+        </section>
+
+
+    </main>
+
+
+    <footer>
+
+        <p>
+            Document Generator
+        </p>
+
+    </footer>
+
+
+
+    <!-- ==============================
+         JAVASCRIPT INTERNAL
+    ============================== -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+
+                const excelInput =
+                    document.getElementById("excel");
+
+
+                const templateInput =
+                    document.getElementById("template");
+
+
+                const excelName =
+                    document.getElementById("excel-name");
+
+
+                const templateName =
+                    document.getElementById("template-name");
+
+
+                const form =
+                    document.getElementById("uploadForm");
+
+
+                const button =
+                    document.getElementById("generate-button");
+
+
+                const statusCard =
+                    document.getElementById("status-card");
+
+
+                const statusMessage =
+                    document.getElementById("status-message");
+
+
+                /* ==========================
+                   EXCEL
+                ========================== */
+
+                excelInput.addEventListener(
+                    "change",
+                    function () {
+
+
+                        if (this.files.length === 0) {
+
+                            excelName.textContent =
+                                "Belum ada file dipilih";
+
+                            return;
+
+                        }
+
+
+                        const file = this.files[0];
+
+
+                        if (
+                            !file.name
+                                .toLowerCase()
+                                .endsWith(".xlsx")
+                        ) {
+
+                            alert(
+                                "File Excel harus berformat .xlsx"
+                            );
+
+
+                            this.value = "";
+
+
+                            excelName.textContent =
+                                "Belum ada file dipilih";
+
+
+                            return;
+
+                        }
+
+
+                        excelName.textContent =
+                            "✓ " + file.name;
+
+                    }
+                );
+
+
+                /* ==========================
+                   TEMPLATE WORD
+                ========================== */
+
+                templateInput.addEventListener(
+                    "change",
+                    function () {
+
+
+                        if (this.files.length === 0) {
+
+                            templateName.textContent =
+                                "Belum ada file dipilih";
+
+                            return;
+
+                        }
+
+
+                        const file = this.files[0];
+
+
+                        if (
+                            !file.name
+                                .toLowerCase()
+                                .endsWith(".docx")
+                        ) {
+
+                            alert(
+                                "Template harus berformat .docx"
+                            );
+
+
+                            this.value = "";
+
+
+                            templateName.textContent =
+                                "Belum ada file dipilih";
+
+
+                            return;
+
+                        }
+
+
+                        templateName.textContent =
+                            "✓ " + file.name;
+
+                    }
+                );
+
+
+                /* ==========================
+                   FORM
+                ========================== */
+
+                form.addEventListener(
+                    "submit",
+                    function () {
+
+
+                        button.disabled = true;
+
+
+                        button.textContent =
+                            "Memproses...";
+
+
+                        statusCard.hidden = false;
+
+
+                        statusMessage.textContent =
+                            "File sedang dikirim dan diproses. Silakan tunggu.";
+
+                    }
+                );
+
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>
