@@ -8,9 +8,27 @@ import tempfile
 import zipfile
 
 
+# =========================================================
+# BASE DIRECTORY
+# =========================================================
+
+BASE_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.abspath(__file__)
+    )
+)
+
+
+# =========================================================
+# FLASK APPLICATION
+# =========================================================
+
 app = Flask(
     __name__,
-    template_folder="../templates"
+    template_folder=os.path.join(
+        BASE_DIR,
+        "templates"
+    )
 )
 
 
@@ -35,7 +53,6 @@ def replace_text(text, data):
 
     pattern = r"\{\{\s*([a-zA-Z0-9_\- ]+)\s*\}\}"
 
-
     def replacement(match):
 
         key = normalize_name(
@@ -52,7 +69,6 @@ def replace_text(text, data):
             return ""
 
         return str(value)
-
 
     return re.sub(
         pattern,
@@ -74,12 +90,10 @@ def process_paragraph(
 
         return
 
-
     new_text = replace_text(
         paragraph.text,
         data
     )
-
 
     if new_text != paragraph.text:
 
@@ -100,8 +114,9 @@ def process_document(
         template_path
     )
 
-
-    # Paragraph
+    # -----------------------------------------------------
+    # PARAGRAPH
+    # -----------------------------------------------------
 
     for paragraph in document.paragraphs:
 
@@ -110,8 +125,9 @@ def process_document(
             data
         )
 
-
-    # Table
+    # -----------------------------------------------------
+    # TABLE
+    # -----------------------------------------------------
 
     for table in document.tables:
 
@@ -126,8 +142,9 @@ def process_document(
                         data
                     )
 
-
-    # Header dan footer
+    # -----------------------------------------------------
+    # HEADER DAN FOOTER
+    # -----------------------------------------------------
 
     for section in document.sections:
 
@@ -138,7 +155,6 @@ def process_document(
                 data
             )
 
-
         for paragraph in section.footer.paragraphs:
 
             process_paragraph(
@@ -146,6 +162,9 @@ def process_document(
                 data
             )
 
+    # -----------------------------------------------------
+    # SIMPAN
+    # -----------------------------------------------------
 
     document.save(
         output_path
@@ -165,7 +184,7 @@ def home():
 
 
 # =========================================================
-# GENERATE
+# GENERATE DOCUMENT
 # =========================================================
 
 @app.route(
@@ -173,6 +192,10 @@ def home():
     methods=["POST"]
 )
 def generate():
+
+    # -----------------------------------------------------
+    # AMBIL FILE
+    # -----------------------------------------------------
 
     excel = request.files.get(
         "excel"
@@ -182,6 +205,9 @@ def generate():
         "template"
     )
 
+    # -----------------------------------------------------
+    # VALIDASI FILE
+    # -----------------------------------------------------
 
     if not excel or not template:
 
@@ -190,57 +216,61 @@ def generate():
             400
         )
 
+    # -----------------------------------------------------
+    # VALIDASI EXCEL
+    # -----------------------------------------------------
 
     if not excel.filename.lower().endswith(
         ".xlsx"
     ):
 
         return (
-            "File Excel harus .xlsx.",
+            "File Excel harus menggunakan format .xlsx.",
             400
         )
 
+    # -----------------------------------------------------
+    # VALIDASI WORD
+    # -----------------------------------------------------
 
     if not template.filename.lower().endswith(
         ".docx"
     ):
 
         return (
-            "Template Word harus .docx.",
+            "Template Word harus menggunakan format .docx.",
             400
         )
 
-
-    # =====================================================
+    # -----------------------------------------------------
     # TEMPORARY DIRECTORY
-    # =====================================================
+    # -----------------------------------------------------
 
     workdir = tempfile.mkdtemp()
 
-
     try:
+
+        # =================================================
+        # SIMPAN FILE SEMENTARA
+        # =================================================
 
         excel_path = os.path.join(
             workdir,
             "data.xlsx"
         )
 
-
         template_path = os.path.join(
             workdir,
             "template.docx"
         )
 
-
         excel.save(
             excel_path
         )
 
-
         template.save(
             template_path
         )
-
 
         # =================================================
         # BACA EXCEL
@@ -251,12 +281,13 @@ def generate():
             data_only=True
         )
 
-
         worksheet = workbook.active
 
+        # =================================================
+        # BACA HEADER
+        # =================================================
 
         headers = []
-
 
         for cell in worksheet[1]:
 
@@ -268,27 +299,25 @@ def generate():
                     )
                 )
 
-
         if not headers:
 
             return (
-                "Excel tidak memiliki header.",
+                "Excel tidak memiliki header pada baris pertama.",
                 400
             )
 
-
         # =================================================
-        # BACA DATA
+        # BACA SEMUA DATA
         # =================================================
 
         rows = []
-
 
         for row in worksheet.iter_rows(
             min_row=2,
             values_only=True
         ):
 
+            # Lewati baris kosong
 
             if not any(
                 value is not None
@@ -297,9 +326,7 @@ def generate():
 
                 continue
 
-
             data = {}
-
 
             for index, header in enumerate(
                 headers
@@ -313,22 +340,23 @@ def generate():
 
                     data[header] = ""
 
-
             rows.append(
                 data
             )
 
+        # =================================================
+        # CEK DATA
+        # =================================================
 
         if not rows:
 
             return (
-                "Excel tidak memiliki data.",
+                "Excel tidak memiliki data pada baris kedua dan seterusnya.",
                 400
             )
 
-
         # =================================================
-        # HASIL
+        # FOLDER HASIL
         # =================================================
 
         output_dir = os.path.join(
@@ -336,18 +364,15 @@ def generate():
             "hasil"
         )
 
-
         os.makedirs(
             output_dir,
             exist_ok=True
         )
 
-
         generated_files = []
 
-
         # =================================================
-        # GENERATE SETIAP BARIS
+        # GENERATE DOCUMENT UNTUK SETIAP ROW
         # =================================================
 
         for number, data in enumerate(
@@ -355,11 +380,18 @@ def generate():
             start=1
         ):
 
+            # -------------------------------------------------
+            # AMBIL NAMA
+            # -------------------------------------------------
+
             name = data.get(
                 "nama",
                 f"data_{number}"
             )
 
+            # -------------------------------------------------
+            # BUAT NAMA FILE YANG AMAN
+            # -------------------------------------------------
 
             safe_name = re.sub(
                 r"[^a-zA-Z0-9_\-]",
@@ -367,17 +399,18 @@ def generate():
                 str(name)
             )
 
-
             filename = (
                 f"{number}_{safe_name}.docx"
             )
-
 
             output_path = os.path.join(
                 output_dir,
                 filename
             )
 
+            # -------------------------------------------------
+            # PROSES TEMPLATE
+            # -------------------------------------------------
 
             process_document(
                 template_path,
@@ -385,14 +418,12 @@ def generate():
                 data
             )
 
-
             generated_files.append(
                 output_path
             )
 
-
         # =================================================
-        # SATU FILE
+        # JIKA HANYA SATU DOKUMEN
         # =================================================
 
         if len(generated_files) == 1:
@@ -405,16 +436,14 @@ def generate():
                 )
             )
 
-
         # =================================================
-        # BANYAK FILE → ZIP
+        # JIKA BANYAK DOKUMEN
         # =================================================
 
         zip_path = os.path.join(
             workdir,
             "hasil_dokumen.zip"
         )
-
 
         with zipfile.ZipFile(
             zip_path,
@@ -431,6 +460,9 @@ def generate():
                     )
                 )
 
+        # =================================================
+        # KIRIM ZIP
+        # =================================================
 
         return send_file(
             zip_path,
@@ -438,6 +470,9 @@ def generate():
             download_name="hasil_dokumen.zip"
         )
 
+    # =====================================================
+    # ERROR HANDLING
+    # =====================================================
 
     except Exception as error:
 
@@ -446,15 +481,14 @@ def generate():
             error
         )
 
-
         return (
-            f"Terjadi kesalahan: {error}",
+            f"Terjadi kesalahan saat membuat dokumen: {error}",
             500
         )
 
 
 # =========================================================
-# VERCEL
+# LOCAL DEVELOPMENT
 # =========================================================
 
 if __name__ == "__main__":
